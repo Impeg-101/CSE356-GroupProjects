@@ -245,7 +245,7 @@ function display_board(){
     </style>
 </head>
 <body>
-    <form action="/CSE356/main.php" method="post">
+    <form action="/connect.php" method="post">
         <?php display_board();?>
     </form>
 </body>
