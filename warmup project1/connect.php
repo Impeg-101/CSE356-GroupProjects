@@ -33,12 +33,12 @@ function display_board(){
 
     $name = isset($_POST['name']) ? htmlspecialchars($_POST['name']) : "";
 
-    // if($name == ""){
-    //     echo '<label for="name">Name:</label>
-    //         <input type="text" id="name" name="name">
-    //         <button type="submit">Submit</button>';
-    //     return;
-    // }
+    if($name == ""){
+        echo '<label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+            <button type="submit">Submit</button>';
+        return;
+    }
 
     $board = isset($_POST['board']) ? urldecode($_POST['board']) : '';
 
