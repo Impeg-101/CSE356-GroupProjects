@@ -104,7 +104,7 @@ function display_board(){
         echo "You won!";
         echo "<br/><button class='play-again-button' type='submit' name='move' value=''>Play Again</button>";
     }else if($_SESSION["winner"] < 0){
-        echo "I won!";
+        echo "You lose!";
         echo "<br/><button class='play-again-button' type='submit' name='move' value=''>Play Again</button>";
     }else{
         echo "Can you find where my ships are?<br/>";
