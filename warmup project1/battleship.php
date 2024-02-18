@@ -1,8 +1,8 @@
 <?php
-
+header('X-CSE356: 65b99885c9f3cb0d090f2059');
 session_start();
 
-$name = isset($_POST["game_name"]) ? htmlspecialchars($_POST["game_name"]) : "";
+$name = isset($_POST["name"]) ? htmlspecialchars($_POST["name"]) : "";
 
 function initializeGame(){
     $_SESSION["moves_left"] = ceil(7 * 5 * 0.60);
@@ -25,12 +25,10 @@ function initializeGame(){
         [4,3]
     ];
     $_SESSION["winner"] = 0;
-    echo "Can you find where my ships are?<br/>";
 }
 
-if(strlen($name) > 0 && !isset($_SESSION["game_name"])){
-    session_start();
-    $_SESSION["game_name"] = $name;
+if(strlen($name) > 0 && !isset($_SESSION["name"])){
+    $_SESSION["name"] = $name;
     initializeGame();
 }
 
@@ -40,15 +38,15 @@ function check_winner($matrix){
 
 function display_board(){
 
-    if(session_status() == PHP_SESSION_NONE){
+    if(session_status() == PHP_SESSION_NONE || !isset($_SESSION["name"])){
         //display the form for inputting the name
-        echo '<label for="game_name">Name:</label>
-        <input type="text" id="game_name" name="game_name">
+        echo '<label for="name">Name:</label>
+        <input type="text" id="name" name="name">
         <button type="submit">Submit</button>';
         return;
     }
     
-    echo "<p>Hello, " . $_SESSION["game_name"] . ", " .  date("Y-m-d") .  "!</p>";
+    echo "<p>Hello " . $_SESSION["name"] . ", " .  date("Y-m-d") .  "</p>";
 
     $move_string = isset($_POST["move"]) ? $_POST["move"] : '';
     
@@ -81,7 +79,7 @@ function display_board(){
         $_SESSION["winner"] = -1;
     }
 
-    echo "Moves left : " . $_SESSION["moves_left"];
+    echo "Moves left: " . $_SESSION["moves_left"];
     echo "<table>";
     for($row=0; $row < 5 ; $row++){
         echo "<tr>";
@@ -104,10 +102,12 @@ function display_board(){
 
     if($_SESSION["winner"] > 0){
         echo "You won!";
-        echo "<br/><button class='play-again-button' type='submit' name='move' value=''>Play again</button>";
+        echo "<br/><button class='play-again-button' type='submit' name='move' value=''>Play Again</button>";
     }else if($_SESSION["winner"] < 0){
         echo "I won!";
-        echo "<br/><button class='play-again-button' type='submit' name='move' value=''>Play again</button>";
+        echo "<br/><button class='play-again-button' type='submit' name='move' value=''>Play Again</button>";
+    }else{
+        echo "Can you find where my ships are?<br/>";
     }
 }
 

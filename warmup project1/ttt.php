@@ -1,4 +1,5 @@
 <?php
+header('X-CSE356: 65b99885c9f3cb0d090f2059');
 // Check if the name is set in the GET request
 $name = isset($_GET['name']) ? htmlspecialchars($_GET['name']) : '';
 
@@ -6,11 +7,24 @@ $board = isset($_GET['board']) ? $_GET['board'] : '        ';
 
 
 function check_winner($xo_array){
-    $ttt_checks = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    $ttt_checks = [
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+        [0,4,8],
+        [2,4,6]
+    ];
 
     foreach($ttt_checks as $check){
-        if ($xo_array[$check[0]] && $xo_array[$check[1]] && $xo_array[$check[2]] && $xo_array[$check[0]] == $xo_array[$check[1]] && $xo_array[$check[0]] == $xo_array[$check[2]]){
-            if($xo_array[$check[0]] == 'x'){
+        if ($xo_array[$check[0]] && 
+            $xo_array[$check[1]] && 
+            $xo_array[$check[2]] && 
+            $xo_array[$check[0]] == $xo_array[$check[1]] && 
+            $xo_array[$check[0]] == $xo_array[$check[2]]){
+            if($xo_array[$check[0]] == 'X'){
                 return 'you';
             }else{
                 return 'me';
@@ -49,24 +63,24 @@ function display_board($board, $name) {
 
     if($winner == "you"){
         echo "You Win!";
-        echo "<a href='/ttt.php?name=$name'>Play Again</a>";
+        echo "<a href='http://localhost/CSE356/ttt.php?name=$name'>Play Again</a>";
     }else if($winner == "me"){
         echo "I Win!";
-        echo "<a href='/ttt.php?name=$name'>Play Again</a>";
+        echo "<a href='http://localhost/CSE356/ttt.php?name=$name'>Play Again</a>";
     }else if($winner == "none"){
         echo "WINNER: NONE.  A STRANGE GAME.  THE ONLY WINNING MOVE IS NOT TO PLAY.";
     }
 
-    if($winner == "" && substr_count($board, 'o') < substr_count($board, 'x')){
+    if($winner == "" && substr_count($board, 'O') < substr_count($board, 'X')){
         $server_cell = $empty_cells[random_int(0, count($empty_cells)-1)];
-        $xo_array[$server_cell] = 'o';
+        $xo_array[$server_cell] = 'O';
     }
 
     $winner = check_winner($xo_array);
 
     if($winner == "me"){
         echo "I Win!";
-        echo "<a href='/ttt.php?name=$name'>Play Again</a>";
+        echo "<a href='http://localhost/CSE356/ttt.php?name=$name'>Play Again</a>";
     }
 
 
@@ -81,7 +95,6 @@ function display_board($board, $name) {
         // Check if the cell is empty
         if ($cell_char == '') {
 
-
             $position = 0;
 
             $space_visited = 0;
@@ -94,29 +107,19 @@ function display_board($board, $name) {
                 $position++;
             }
 
-            $next_board = substr($board, 0, $position) . 'x' . substr($board, $position);
+            $next_board = substr($board, 0, $position) . 'X' . substr($board, $position);
             if($winner == ""){
-                 echo "<a href='/ttt.php?name=$name&board=$next_board'>Move</a>";
+                 echo "<a href='http://localhost/CSE356/ttt.php?name=$name&board=$next_board'>Move</a>";
             }
         } else {
             echo $cell_char;
         }
         echo "</td>";
 
-        if ($cell % 3 == 2) echo "</tr>"; // End row
+        if ($cell % 3 == 2) echo "</tr>";
     }
-    echo "</table>"; // End table
+    echo "</table>";
 }
-
-//display_board("x        ","jdklsajdlk");
-//display_board("x    o    ","jdklsajdlk");
-//display_board("        ","jdklsajdlk");
-//display_board("        ","jdklsajdlk");
-//display_board("        ","jdklsajdlk");
-//display_board("        ","jdklsajdlk");
-//display_board("        ","jdklsajdlk");
-
-
 
 ?>
 
@@ -149,7 +152,7 @@ function display_board($board, $name) {
 </head>
 <body>
     <?php if ($name): ?>
-        <p>Hello, <?= $name ?>, <?= date("Y-m-d") ?>!</p>
+        <p><?= "Hello " . $name . ", " . date("Y-m-d") ?></p>
         <?php display_board($board, $name);?>
     <?php else: ?>
     <form action="/ttt.php" method="get">

@@ -1,5 +1,5 @@
 <?php
-
+header('X-CSE356: 65b99885c9f3cb0d090f2059');
 function check_winner($matrix){
     
     for($row=5; $row >= 0; $row--){
@@ -42,7 +42,7 @@ function display_board(){
 
     $board = isset($_POST['board']) ? urldecode($_POST['board']) : '';
 
-    echo "<p>Hello, " . $name . ", " .  date("Y-m-d") .  "!</p>";
+    echo "<p>Hello " . $name . ", " .  date("Y-m-d") .  "</p>";
 
     // turn board string into an array
 
@@ -85,40 +85,52 @@ function display_board(){
 
     $winner = 0;
 
-    $winner_cells = check_winner($matrix);
-    
-    if(count($winner_cells) > 0){
-        $cell = $winner_cells[0];
-        if($matrix[$cell[0]][$cell[1]] == "X"){
-            $winner = 1;
-        }else{
-            $winner = -1;
-        }
-    }
-
-    if($winner == 0 && $board != ""){
-        // add a random move
-
-        $rand_col = random_int(0,6);
-
-        $row = 0;
-        while($row < 5){
-            if($matrix[$row+1][$rand_col] == ""){
-                $row++;
-            }else{
-                break;
-            }
-        }
-        $matrix[$row][$rand_col] = "O";
-
+    $full_board = implode("",[
+        implode("",$matrix[0]),
+        implode("",$matrix[1]),
+        implode("",$matrix[2]),
+        implode("",$matrix[3]),
+        implode("",$matrix[4]),
+        implode("",$matrix[5])
+    ]);
+    if(strlen($full_board) == 42){
+        $winner = 2;
+    }else{
         $winner_cells = check_winner($matrix);
-    
-        if(count($winner_cells) > 0){
+        // "is_array($winner_cells)" is soley for not having a red line
+        if(is_array($winner_cells) && count($winner_cells) > 0){
             $cell = $winner_cells[0];
             if($matrix[$cell[0]][$cell[1]] == "X"){
                 $winner = 1;
             }else{
                 $winner = -1;
+            }
+        }
+
+        if($winner == 0 && $board != ""){
+            // add a random move
+
+            $rand_col = random_int(0,6);
+
+            $row = 0;
+            while($row < 5){
+                if($matrix[$row+1][$rand_col] == ""){
+                    $row++;
+                }else{
+                    break;
+                }
+            }
+            $matrix[$row][$rand_col] = "O";
+
+            $winner_cells = check_winner($matrix);
+            // "is_array($winner_cells)" is soley for not having a red line
+            if(is_array($winner_cells) && count($winner_cells) > 0){
+                $cell = $winner_cells[0];
+                if($matrix[$cell[0]][$cell[1]] == "X"){
+                    $winner = 1;
+                }else{
+                    $winner = -1;
+                }
             }
         }
     }
@@ -183,25 +195,15 @@ function display_board(){
     }
     
     echo "</table>";
-    if($winner > 0){
+    if($winner == 1){
         echo "You won!";
-        echo "<br/><button type='submit' name='board' value=''>Play again</button>";
-    }else if($winner < 0){
+        echo "<br/><button type='submit' name='board' value=''>Play Again</button>";
+    }else if($winner == -1){
         echo "I won!";
-        echo "<br/><button type='submit' name='board' value=''>Play again</button>";
-    }else{
-        $full_board = implode("",[
-                                    implode("",$matrix[0]),
-                                    implode("",$matrix[1]),
-                                    implode("",$matrix[2]),
-                                    implode("",$matrix[3]),
-                                    implode("",$matrix[4]),
-                                    implode("",$matrix[5])
-                                ]);
-        if(strlen($full_board) == 42){
-            echo "Draw";
-            echo "<br/><button type='submit' name='board' value=''>Play again</button>";
-        }
+        echo "<br/><button type='submit' name='board' value=''>Play Again</button>";
+    }else if($winner == 2){
+        echo "Draw";
+        echo "<br/><button type='submit' name='board' value=''>Play Again</button>";
     }
     echo '<input type="hidden" name="name" value="' . $name . '">';
 }
